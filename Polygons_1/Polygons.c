@@ -45,19 +45,19 @@ int getAndRemoveNextBit(LLU* input) {
 LIST_NODE* createListNode(LLU input) {
 	LIST_NODE *result = (LIST_NODE *)malloc(sizeof(LIST_NODE *));
 	//TODO debug
-	printf("input: %llx", input);
+	printf("input: %llx\n", input);
 
 	//get vertices
-	LLU polygon = input >> ACTION_BITS;
-	printf("1.polygon: %llx", input);
+	LLU polygon = input >> 8;
+	printf("1.polygon: %llx\n", polygon);
 
 	// get and add type
-	polygon <<= 1;
-	printf("2.polygon: %llx", input);
+	polygon <<= 4;
+	printf("2.polygon: %llx\n", polygon);
 
 	polygon |= getBitAt(input, 2);
 	
-	printf("3.polygon: %llx", input);
+	printf("3.polygon: %llx\n", polygon);
 
 	result->polygon = polygon;
 	result->next = NULL;
