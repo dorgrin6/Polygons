@@ -18,6 +18,13 @@
 #define DO_CURRENT_FUNC 4
 #define DO_ALL_FUNC_FUNC 5
 
+// polygon bits
+#define CURRENT_POLYGON 0
+#define ALL_TRIANGLES 1
+#define ALL_SQUARES 2
+#define ALL_POLYGONS 3
+
+
 #define VERTEX_AMOUNT_OF_BITS 6
 #define TYPE_BIT 1
 
@@ -48,10 +55,12 @@ typedef struct edge {
 
 void initFunctionPointerArray();
 BOOL createPolygonFromInput(LLU input);
-int getAndRemoveNextBit(LLU* input);
+//int getAndRemoveNextBit(LLU* input);
 int getBitAt(LLU input, int bitIndex);
 
 LLU getPolygonFromInput(LLU input);
+
+void doPolygonActions(LLU input);
 
 LIST_NODE * createListNode(LLU input);
 

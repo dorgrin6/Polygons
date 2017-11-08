@@ -20,6 +20,7 @@ void main() {
 		printf("the number is: %llx\n", input);
 
 		continueInput = createPolygonFromInput(input);
+		doPolygonActions(input);
 		print_polygon(input);
 		//perimeter(input);
 		area(input);
@@ -32,14 +33,51 @@ LLU getPolygonFromInput(LLU input) {
 	//printf("1.polygon: %llx\n", polygon);
 
 	// get and add type
-	polygon <<= TYPE_BIT;
+	polygon <<= 1;
 	//printf("2.polygon: %llx\n", polygon);
 
-	polygon |= getBitAt(input, 2);
+	polygon += ((input & 4) >> 2);
 
 	//printf("3.polygon: %llx\n", polygon);
 
 	return polygon;
+}
+
+void doPolygonActions(LLU input) {
+	BOOL isPrintAction = (input & 0x4) != 0;
+	BOOL isPerimeterAction = (input & 0x8) != 0;
+	BOOL isAreaAction = (input & 0x10) != 0;
+
+	LLU whoToMakeOnMask = (input & 0x60) >> 6;
+
+	if (whoToMakeOnMask == CURRENT_POLYGON) {
+		do_all(input);
+	}
+	else if (whoToMakeOnMask == ALL_TRIANGLES) {
+		do_all(input);
+	}
+	else if (whoToMakeOnMask == ALL_SQUARES) {
+		do_all(input);
+	}
+	else if (whoToMakeOnMask == ALL_POLYGONS) {
+		do_all(input);
+	}
+
+	LIST_NODE* currentPolygon = polygons.head;
+	while (currentPolygon != NULL) {
+		if (isActionPoly(currentPolygon)) {
+			if (isPrintAction) {
+				print_polygon(currentPolygon->polygon);
+			}
+			if (isPerimeterAction) {
+				perimeter(currentPolygon->polygon);
+			}
+			if (isAreaAction) {
+				area(currentPolygon->polygon);
+			}
+
+		}
+	}
 }
 
 LIST_NODE* createListNode(LLU input) {
@@ -158,6 +196,7 @@ VERTEX* getVertexFromPolygon(int vertexFirstBit, LLU polygon) {
 }
 
 void printVertex(int vertexFirstBit, LLU polygon) {
+
 	VERTEX* vertex = getVertexFromPolygon(vertexFirstBit, polygon);
 	
 	printf("{%d, %d} ", vertex->x, vertex->y);
@@ -202,16 +241,18 @@ void print_polygon(long long unsigned input)
 
 void do_current(long long unsigned input)
 {
+	
 }
 
 void do_all(long long unsigned input)
 {
+
 }
 
 BOOL createPolygonFromInput(LLU input)
 {
 	BOOL isLastCommand = (BOOL)getBitAt(input, 0);
-	int bitCounter = AMOUNT_OF_DIGITS_IN_INPUT - 1; // start bitcounter on 63rd bit
+	//int bitCounter = AMOUNT_OF_DIGITS_IN_INPUT - 1; // start bitcounter on 63rd bit
 
 	int nextBit = getBitAt(input, 1);
 
