@@ -8,6 +8,12 @@
 struct polygonsList polygons;
 void(*functionPointerArray[AMOUNT_OF_FUNCTIONS])(LLU);
 
+char whoToMakeOn(LLU input) {
+	input &= 0xc0;
+	input >>= 6;
+	return (char)input;
+}
+
 void parseInput(LLU input) {
 	LLU polygon = getPolygonFromInput(input);
 
@@ -17,7 +23,7 @@ void parseInput(LLU input) {
 		add_polygon(polygon);
 	}
 
-	LLU whoToMakeOnMask = (input & 0x60) >> 6;
+	char whoToMakeOnMask = whoToMakeOn(input);
 
 	if (whoToMakeOnMask == CURRENT_POLYGON) {
 		do_current(input);
@@ -27,6 +33,7 @@ void parseInput(LLU input) {
 	}
 	//area(input);
 }
+
 
 
 LLU getPolygonFromInput(LLU input) {
@@ -61,7 +68,7 @@ void do_all(long long unsigned input)
 {
 	ACTIONS_LIST actionsList = getActionsList(input);
 
-	LLU whoToMakeOnMask = (input & 0x60) >> 6;
+	LLU whoToMakeOnMask = whoToMakeOn(input);
 
 	LIST_NODE* currentPolygon = polygons.head;
 
@@ -108,7 +115,7 @@ void doActionsOnPolygon(LIST_NODE* polygon, ACTIONS_LIST actionsList) {
 LIST_NODE* createListNode(LLU polygon) {
 	LIST_NODE *result = (LIST_NODE *)malloc(sizeof(LIST_NODE));
 	//TODO debug
-	printf("input: %llx\n", polygon);
+	//printf("input: %llx\n", polygon);
 
 	result->polygon = polygon;
 	result->next = NULL;
@@ -280,7 +287,7 @@ void initFunctionPointerArray() {
 void main() {
 	BOOL stopInput = FALSE;
 	LLU input;
-
+	int i;
 	initFunctionPointerArray();
 
 	while (!stopInput) {
@@ -289,5 +296,13 @@ void main() {
 
 		stopInput = (BOOL)getBitAt(input, 0);
 		parseInput(input);
+	}
+
+	LIST_NODE *currentNode = polygons.head;
+	LIST_NODE *previousNode;
+	while (currentNode != NULL) {
+		previousNode = currentNode;
+		currentNode = currentNode->next;
+		free(previousNode);
 	}
 }
